@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wave Optics Lab Simulator — ISC Class XII</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#64748b;--line:#dbe3ee;--blue:#2457c5;--blue2:#eaf1ff;--green:#157347;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:#142747;color:white;padding:24px 18px}header .wrap,main{max-width:1100px;margin:auto}h1{font-size:clamp(1.45rem,3vw,2.1rem);line-height:1.2;margin:0 0 8px}header p{margin:0;color:#dbe7ff}.wrap small{opacity:.9}
+main{padding:18px;display:grid;gap:16px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:white;color:var(--ink);padding:11px 15px;border-radius:10px;font-weight:700;cursor:pointer}.tab[aria-selected=true]{background:var(--blue);color:white;border-color:var(--blue)}
+.panel{display:none}.panel.active{display:grid;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 2px 8px #1720330a}.card h2,.card h3{margin:0 0 12px}.sub{color:var(--muted);margin-top:-5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.field label{display:block;font-weight:650;font-size:.9rem;margin-bottom:5px}.field input{width:100%;padding:10px 11px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:white;color:var(--ink)}.field .unit{font-size:.8rem;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:9px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;background:var(--blue);color:white}.btn.secondary{background:var(--blue2);color:var(--blue)}.btn.danger{background:#fff0ef;color:var(--red)}.note{background:#fff8e6;border:1px solid #f4d58b;border-radius:10px;padding:12px;color:#694b00}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}.metric{background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:12px}.metric span{display:block;color:var(--muted);font-size:.82rem}.metric strong{font-size:1.25rem;overflow-wrap:anywhere}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:660px}th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}th{background:#f4f7fb;font-size:.83rem}th:first-child,td:first-child{text-align:center}td button{border:0;border-radius:6px;padding:5px 8px;cursor:pointer;background:#fff0ef;color:var(--red)}canvas{width:100%;height:290px;border:1px solid var(--line);border-radius:10px;background:white}footer{color:var(--muted);font-size:.85rem;padding:0 18px 24px;max-width:1100px;margin:auto}
+@media(max-width:600px){main{padding:12px}.card{padding:14px}.actions .btn{flex:1}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Wave Optics Lab Simulator</h1><p>ISC Class XII Physics · Young’s Double-Slit Interference and Single-Slit Diffraction</p><small>Enter your own laboratory readings, calculate observations, and export the tables.</small></div></header>
+<main>
+<div class="note"><b>How to use:</b> Select an experiment, enter the screen distance and the measured width from your lab, then choose <i>Add reading</i>. Calculations update automatically. After a row appears, use its <b>PNG</b> button to export a separate labelled pattern for that exact reading. Values already printed in the project PDF can be loaded as reference readings; they are sample/report values, not new experimental measurements.</div>
+<div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true" data-target="double">1. Double-slit interference</button><button class="tab" role="tab" aria-selected="false" data-target="single">2. Single-slit diffraction</button></div>
+
+<section id="double" class="panel active">
+<div class="card"><h2>Experiment A — Young’s double-slit</h2><p class="sub">Formula: β = λD/d; λ = βd/D. The PDF measures the total width of 10 fringe intervals.</p>
+<div class="grid">
+<div class="field"><label for="dsep">Slit separation, d</label><input id="dsep" type="number" min="0.000001" step="any" value="0.250"><div class="unit">mm (project value: 0.250 mm)</div></div>
+<div class="field"><label for="laserA">Reference laser wavelength</label><input id="laserA" type="number" min="1" step="any" value="650"><div class="unit">nm (manufacturer value)</div></div>
+<div class="field"><label for="distanceA">Screen distance, D</label><input id="distanceA" type="number" min="0.01" step="any" value="1.00"><div class="unit">m</div></div>
+<div class="field"><label for="widthA">Width of 10 fringes</label><input id="widthA" type="number" min="0.001" step="any" value="25.6"><div class="unit">mm</div></div>
+</div><div class="actions"><button class="btn" id="addA">Add reading</button><button class="btn secondary" id="sampleA">Load PDF readings</button><button class="btn secondary" id="clearA">Clear table</button></div>
+<div class="results" style="margin-top:14px"><div class="metric"><span>Fringe width, β</span><strong id="betaA">2.560 mm</strong></div><div class="metric"><span>Calculated wavelength</span><strong id="lambdaA">640.0 nm</strong></div><div class="metric"><span>Difference from reference</span><strong id="errorA">−1.54%</strong></div><div class="metric"><span>Mean wavelength in table</span><strong id="meanA">—</strong></div></div></div>
+<div class="card"><h3>Observation table — Double slit</h3><div class="tablewrap"><table><thead><tr><th>No.</th><th>D (m)</th><th>Width of 10 fringes (mm)</th><th>β (mm)</th><th>λ (nm)</th><th>Error vs reference (%)</th><th>Pattern PNG / Action</th></tr></thead><tbody id="bodyA"></tbody></table></div><div class="actions"><button class="btn secondary" id="csvA">Export CSV</button></div></div>
+<div class="card"><h3>Graph: fringe width β against screen distance D</h3><p class="sub">Points use the readings currently in the table. The straight-line slope is approximately λ/d. Use the PNG button in any observation row to create a separate, labelled pattern image for that particular reading.</p><canvas id="graphA" width="1000" height="320" aria-label="Graph of fringe width against screen distance"></canvas><p id="slopeA" class="sub">Add at least two readings to calculate a slope.</p></div>
+</section>
+
+<section id="single" class="panel">
+<div class="card"><h2>Experiment B — Single-slit diffraction</h2><p class="sub">Formula: W = 2λD/a; λ = Wa/(2D) = y₁a/D. Angular spread is approximately W/D in radians.</p>
+<div class="grid">
+<div class="field"><label for="awidth">Single-slit width, a</label><input id="awidth" type="number" min="0.000001" step="any" value="0.100"><div class="unit">mm (project value: 0.100 mm)</div></div>
+<div class="field"><label for="laserB">Reference laser wavelength</label><input id="laserB" type="number" min="1" step="any" value="650"><div class="unit">nm (manufacturer value)</div></div>
+<div class="field"><label for="distanceB">Screen distance, D</label><input id="distanceB" type="number" min="0.01" step="any" value="1.00"><div class="unit">m</div></div>
+<div class="field"><label for="widthB">Central maximum width, W</label><input id="widthB" type="number" min="0.001" step="any" value="12.9"><div class="unit">mm (distance between first minima)</div></div>
+</div><div class="actions"><button class="btn" id="addB">Add reading</button><button class="btn secondary" id="sampleB">Load PDF readings</button><button class="btn secondary" id="clearB">Clear table</button></div>
+<div class="results" style="margin-top:14px"><div class="metric"><span>Half-width, y₁ = W/2</span><strong id="halfB">6.450 mm</strong></div><div class="metric"><span>Calculated wavelength</span><strong id="lambdaB">645.0 nm</strong></div><div class="metric"><span>Angular spread, 2θ</span><strong id="angleB">1.290 × 10⁻² rad</strong></div><div class="metric"><span>Mean wavelength in table</span><strong id="meanB">—</strong></div></div></div>
+<div class="card"><h3>Observation table — Single slit</h3><div class="tablewrap"><table><thead><tr><th>No.</th><th>D (m)</th><th>W (mm)</th><th>y₁ (mm)</th><th>λ (nm)</th><th>Angular spread, 2θ (rad)</th><th>Pattern PNG / Action</th></tr></thead><tbody id="bodyB"></tbody></table></div><div class="actions"><button class="btn secondary" id="csvB">Export CSV</button></div></div>
+<div class="card"><h3>Graph: central maximum width W against screen distance D</h3><p class="sub">For a fixed slit and wavelength, W should increase approximately linearly with D. Use the PNG button in any observation row to create a separate, labelled pattern image for that particular reading.</p><canvas id="graphB" width="1000" height="320" aria-label="Graph of central maximum width against screen distance"></canvas><p id="slopeB" class="sub">Add at least two readings to calculate a slope.</p></div>
+</section>
+
+<section class="card" id="visual-lab">
+<h2>Live optical pattern simulation</h2>
+<p class="sub">These idealised diagrams update as you change the readings and constants. They illustrate the expected patterns rather than showing a photograph of a real apparatus.</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+<div><h3>Young’s double-slit interference</h3><canvas id="patternA" width="620" height="340" aria-label="Simulated double slit interference fringes"></canvas><p class="sub">Regular, evenly spaced bright and dark fringes.</p></div>
+<div><h3>Single-slit diffraction</h3><canvas id="patternB" width="620" height="340" aria-label="Simulated single slit diffraction pattern"></canvas><p class="sub">A broad central maximum with weaker secondary maxima.</p></div>
+<div><h3>Double-slit optical bench</h3><canvas id="setupA" width="620" height="210" aria-label="Laser double slit screen schematic"></canvas></div>
+<div><h3>Single-slit optical bench</h3><canvas id="setupB" width="620" height="210" aria-label="Laser single slit screen schematic"></canvas></div>
+</div></section>
+
+<div class="card"><h3>Formula and unit guide</h3><ul><li>Convert slit dimensions from millimetres to metres before substituting in SI equations.</li><li>Double slit: β = (width of 10 fringes)/10; λ = βd/D.</li><li>Single slit: y₁ = W/2; λ = y₁a/D; 2θ ≈ W/D.</li><li>Percentage difference = |calculated λ − reference λ| / reference λ × 100.</li><li>Use the same screen-distance reference point for all readings. Never look into the laser beam or its reflections.</li></ul><p class="sub">This is a calculation/observation helper, not a physical optical ray-tracing simulation. Record real readings from your setup and use the PDF values only as reference data.</p></div>
+</main><footer>Made for the project report: “A Report on Young’s Double-Slit Experiment and Single-Slit Diffraction.” Calculations use the small-angle approximation stated in the report.</footer>
+<script>
+const A=[], B=[];
+const $=id=>document.getElementById(id);
+const fmt=(n,d=2)=>Number.isFinite(n)?n.toFixed(d):'—';
+const signPct=n=>(n<0?'−':'+')+Math.abs(n).toFixed(2)+'%';
+function calcA(D,W){const d=+$('dsep').value*1e-3, ref=+$('laserA').value, beta=W/10, lam=beta*1e6*d/D;return {D,W,beta,lam,err:(lam-ref)/ref*100};}
+function calcB(D,W){const a=+$('awidth').value*1e-3, ref=+$('laserB').value, half=W/2, lam=half*1e6*a/D;return {D,W,half,lam,ang:W*1e-3/D,err:(lam-ref)/ref*100};}
+function updatePreviewA(){const D=+$('distanceA').value,W=+$('widthA').value;if(D>0&&W>0&&+$('dsep').value>0){let r=calcA(D,W);$('betaA').textContent=fmt(r.beta,3)+' mm';$('lambdaA').textContent=fmt(r.lam,1)+' nm';$('errorA').textContent=signPct(r.err)}}
+function updatePreviewB(){const D=+$('distanceB').value,W=+$('widthB').value;if(D>0&&W>0&&+$('awidth').value>0){let r=calcB(D,W);$('halfB').textContent=fmt(r.half,3)+' mm';$('lambdaB').textContent=fmt(r.lam,1)+' nm';$('angleB').textContent=r.ang.toExponential(3)+' rad'}}
+function renderA(){ $('bodyA').innerHTML=A.map((r,i)=>`<tr><td>${i+1}</td><td>${fmt(r.D,2)}</td><td>${fmt(r.W,2)}</td><td>${fmt(r.beta,3)}</td><td>${fmt(r.lam,1)}</td><td>${signPct(r.err)}</td><td><button onclick="downloadPatternA(${i})" style="background:#eaf1ff;color:#2457c5;margin-right:4px">PNG</button><button onclick="removeA(${i})">Remove</button></td></tr>`).join('');$('meanA').textContent=A.length?fmt(A.reduce((s,r)=>s+r.lam,0)/A.length,2)+' nm':'—';draw('graphA',A,'beta','D','β (mm)','D (m)');let sl=slope(A,'D','beta');$('slopeA').textContent=sl===null?'Add at least two readings to calculate a slope.':`Best-fit slope (β vs D): ${sl.toExponential(4)} mm/m. Estimated wavelength from slope × d: ${(sl*1e6*(+$('dsep').value*1e-3)).toFixed(1)} nm.`}
+function renderB(){ $('bodyB').innerHTML=B.map((r,i)=>`<tr><td>${i+1}</td><td>${fmt(r.D,2)}</td><td>${fmt(r.W,2)}</td><td>${fmt(r.half,3)}</td><td>${fmt(r.lam,1)}</td><td>${r.ang.toExponential(3)}</td><td><button onclick="downloadPatternB(${i})" style="background:#eaf1ff;color:#2457c5;margin-right:4px">PNG</button><button onclick="removeB(${i})">Remove</button></td></tr>`).join('');$('meanB').textContent=B.length?fmt(B.reduce((s,r)=>s+r.lam,0)/B.length,2)+' nm':'—';draw('graphB',B,'W','D','W (mm)','D (m)');let sl=slope(B,'D','W');$('slopeB').textContent=sl===null?'Add at least two readings to calculate a slope.':`Best-fit slope (W vs D): ${sl.toExponential(4)} mm/m.`}
+window.removeA=i=>{A.splice(i,1);renderA()};window.removeB=i=>{B.splice(i,1);renderB()};
+function slope(rows,x,y){if(rows.length<2)return null;let mx=rows.reduce((s,r)=>s+r[x],0)/rows.length,my=rows.reduce((s,r)=>s+r[y],0)/rows.length;let den=rows.reduce((s,r)=>s+(r[x]-mx)**2,0);return den?rows.reduce((s,r)=>s+(r[x]-mx)*(r[y]-my),0)/den:null}
+function draw(id,rows,yKey,xKey,yLabel,xLabel){let c=$(id),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);let pad={l:75,r:25,t:25,b:55};let pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;ctx.strokeStyle='#dbe3ee';ctx.fillStyle='#64748b';ctx.font='15px system-ui';ctx.lineWidth=1;for(let i=0;i<=5;i++){let yy=pad.t+ph*i/5;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(w-pad.r,yy);ctx.stroke()}if(!rows.length){ctx.fillStyle='#64748b';ctx.fillText('Add readings to display the graph',pad.l+20,h/2);return}let xs=rows.map(r=>r[xKey]),ys=rows.map(r=>r[yKey]),xmin=Math.min(0,...xs),xmax=Math.max(...xs)*1.08||1,ymin=Math.min(0,...ys),ymax=Math.max(...ys)*1.12||1;const X=x=>pad.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>pad.t+ph-(y-ymin)/(ymax-ymin)*ph;for(let i=0;i<=5;i++){let val=ymax*i/5;ctx.fillText(val.toFixed(2),8,Y(val)+5)}ctx.fillText(yLabel,10,17);ctx.fillText(xLabel,pad.l+pw/2,h-12);ctx.strokeStyle='#2457c5';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X(xmin),Y(0));ctx.lineTo(X(xmax),Y(0));ctx.stroke();ctx.fillStyle='#2457c5';rows.forEach(r=>{ctx.beginPath();ctx.arc(X(r[xKey]),Y(r[yKey]),6,0,Math.PI*2);ctx.fill()});if(rows.length>=2){let s=slope(rows,xKey,yKey),mx=rows.reduce((t,r)=>t+r[xKey],0)/rows.length,my=rows.reduce((t,r)=>t+r[yKey],0)/rows.length,b=my-s*mx;ctx.strokeStyle='#e28a22';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(xmin),Y(s*xmin+b));ctx.lineTo(X(xmax),Y(s*xmax+b));ctx.stroke()}}
+function addA(){let D=+$('distanceA').value,W=+$('widthA').value;if(!(D>0&&W>0&&+$('dsep').value>0&&+$('laserA').value>0)){alert('Enter positive values for all measurements and constants.');return}A.push(calcA(D,W));renderA()}
+function addB(){let D=+$('distanceB').value,W=+$('widthB').value;if(!(D>0&&W>0&&+$('awidth').value>0&&+$('laserB').value>0)){alert('Enter positive values for all measurements and constants.');return}B.push(calcB(D,W));renderB()}
+function csv(rows,headers,mapper,name){let content=[headers,...rows.map(mapper)].map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\r\n');let blob=new Blob([content],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+$('addA').onclick=addA;$('addB').onclick=addB;
+$('clearA').onclick=()=>{A.length=0;renderA()};$('clearB').onclick=()=>{B.length=0;renderB()};
+$('sampleA').onclick=()=>{A.length=0;[[1,25.6],[1.2,30.9],[1.4,36.1],[1.6,41.1],[1.8,46.3]].forEach(v=>A.push(calcA(...v)));renderA()};
+$('sampleB').onclick=()=>{B.length=0;[[1,12.9],[1.25,16.1],[1.5,19.3],[1.75,22.4]].forEach(v=>B.push(calcB(...v)));renderB()};
+$('csvA').onclick=()=>csv(A,['No.','D_m','10_fringe_width_mm','beta_mm','lambda_nm','percent_difference'],(r,i)=>[i+1,r.D,r.W,r.beta,r.lam,r.err],'double_slit_observations.csv');
+$('csvB').onclick=()=>csv(B,['No.','D_m','central_width_W_mm','half_width_y1_mm','lambda_nm','angular_spread_rad'],(r,i)=>[i+1,r.D,r.W,r.half,r.lam,r.ang],'single_slit_observations.csv');
+['dsep','laserA','distanceA','widthA'].forEach(id=>$(id).addEventListener('input',updatePreviewA));['awidth','laserB','distanceB','widthB'].forEach(id=>$(id).addEventListener('input',updatePreviewB));
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b===btn?'true':'false'));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===btn.dataset.target))});
+
+function visualCanvas(id){
+ const c=$(id),ctx=c.getContext('2d'),w=c.width,h=c.height;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+ return {c,ctx,w,h};
+}
+function drawPattern(id,type,lambdaNm,D,apertureMm){
+ const {ctx,w,h}=visualCanvas(id), mid=w/2, top=34, bottom=h-36, hh=bottom-top;
+ ctx.fillStyle='#172033';ctx.font='bold 16px system-ui';
+ ctx.fillText(type==='double'?'Fringe pattern — bright/dark bands':'Diffraction pattern — central and side maxima',12,22);
+ // Relative fringe scale: beta = lambda D / d; W = 2 lambda D / a.
+ const scale=type==='double'
+   ? (lambdaNm*1e-9*D/(apertureMm*1e-3))*1e6
+   : (2*lambdaNm*1e-9*D/(apertureMm*1e-3))*1e6;
+ const spacing=Math.max(9,Math.min(165,scale*1.0));
+ for(let x=0;x<w;x++){
+   const u=(x-mid)/spacing;
+   let intensity;
+   if(type==='double') intensity=Math.pow(Math.cos(Math.PI*u),2);
+   else {const z=Math.PI*u; intensity=Math.abs(z)<1e-8?1:Math.pow(Math.sin(z)/z,2);}
+   const red=Math.round(30+225*intensity), green=Math.round(8+65*intensity), blue=Math.round(5+35*intensity);
+   ctx.fillStyle=`rgb(${red},${green},${blue})`;ctx.fillRect(x,top,1,hh);
+ }
+ // Plot relative intensity curve over the band pattern.
+ ctx.beginPath();ctx.strokeStyle='#1455bd';ctx.lineWidth=2;
+ for(let x=0;x<w;x++){
+   const u=(x-mid)/spacing;let I;
+   if(type==='double')I=Math.pow(Math.cos(Math.PI*u),2);
+   else {const z=Math.PI*u;I=Math.abs(z)<1e-8?1:Math.pow(Math.sin(z)/z,2);}
+   const y=bottom-I*hh*.35;
+   if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+ }
+ ctx.stroke();ctx.strokeStyle='#64748b';ctx.beginPath();ctx.moveTo(0,bottom);ctx.lineTo(w,bottom);ctx.stroke();
+ ctx.fillStyle='#172033';ctx.font='13px system-ui';ctx.fillText('Position across screen →',w-175,h-10);
+ ctx.fillText('Centre',mid-20,bottom-5);
+}
+function drawSetup(id,isDouble,D){
+ const {ctx,w,h}=visualCanvas(id),y=94,lx=48,sx=285,screen=520;
+ ctx.fillStyle='#172033';ctx.font='bold 15px system-ui';ctx.fillText('Optical arrangement (schematic, not to scale)',12,22);
+ ctx.strokeStyle='#94a3b8';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(25,155);ctx.lineTo(w-25,155);ctx.stroke();
+ ctx.fillStyle='#475569';ctx.fillRect(lx-16,y-14,32,28);ctx.fillStyle='#dc2626';ctx.fillRect(lx+16,y-3,17,6);
+ ctx.fillStyle='#172033';ctx.font='13px system-ui';ctx.fillText('Laser',lx-18,125);
+ ctx.fillStyle='rgba(220,38,38,.14)';ctx.beginPath();ctx.moveTo(lx+32,y-5);ctx.lineTo(sx,y-23);ctx.lineTo(screen,y-58);ctx.lineTo(screen,y+58);ctx.lineTo(sx,y+23);ctx.lineTo(lx+32,y+5);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#dc2626';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx+33,y);ctx.lineTo(sx,y);ctx.stroke();
+ ctx.fillStyle='#334155';ctx.fillRect(sx-5,y-43,10,86);ctx.fillStyle='#fff';
+ if(isDouble){ctx.fillRect(sx-7,y-16,14,7);ctx.fillRect(sx-7,y+9,14,7);}else{ctx.fillRect(sx-7,y-5,14,10);}
+ ctx.fillStyle='#172033';ctx.fillText(isDouble?'Double slit':'Single slit',sx-37,43);
+ ctx.fillStyle='#64748b';ctx.fillRect(screen,y-65,9,130);
+ for(let k=-5;k<=5;k++){ctx.fillStyle=isDouble?(k%2===0?'#ef4444':'#fff'):(Math.abs(k)<=1?'#ef4444':Math.abs(k)<=3?'#fca5a5':'#fff');ctx.fillRect(screen+2,y+k*11-4,5,8);}
+ ctx.fillStyle='#172033';ctx.fillText('Screen',screen-12,43);
+ ctx.strokeStyle='#2457c5';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(sx+12,183);ctx.lineTo(screen,183);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(sx+12,183);ctx.lineTo(sx+20,178);ctx.moveTo(sx+12,183);ctx.lineTo(sx+20,188);ctx.moveTo(screen,183);ctx.lineTo(screen-8,178);ctx.moveTo(screen,183);ctx.lineTo(screen-8,188);ctx.stroke();
+ ctx.fillStyle='#2457c5';ctx.fillText(`Screen distance D = ${Number(D).toFixed(2)} m`,340,204);
+}
+
+function downloadCanvasPNG(canvas, filename){
+ const link=document.createElement('a');
+ link.download=filename;link.href=canvas.toDataURL('image/png');link.click();
+}
+function drawReadingPlate(kind, row, index){
+ const c=document.createElement('canvas');c.width=1500;c.height=900;
+ const x=c.getContext('2d'),W=c.width,H=c.height;
+ x.fillStyle='#ffffff';x.fillRect(0,0,W,H);
+ x.fillStyle='#142747';x.fillRect(0,0,W,112);
+ x.fillStyle='#ffffff';x.font='bold 34px system-ui';
+ x.fillText(kind==='double'?'Young’s Double-Slit Interference':'Single-Slit Fraunhofer Diffraction',48,52);
+ x.font='20px system-ui';x.fillStyle='#dbe7ff';
+ x.fillText(`Reading ${index+1} · ISC Class XII Physics · Simulated optical pattern`,48,85);
+ const margin=55, panelY=145, panelH=460, panelW=680;
+ x.fillStyle='#f7f9fc';x.strokeStyle='#dbe3ee';x.lineWidth=2;
+ x.fillRect(margin,panelY,panelW,panelH);x.strokeRect(margin,panelY,panelW,panelH);
+ x.fillRect(765,panelY,panelW,panelH);x.strokeRect(765,panelY,panelW,panelH);
+ x.fillStyle='#172033';x.font='bold 23px system-ui';
+ x.fillText('Simulated screen pattern',margin+24,panelY+38);
+ x.fillText('Relative intensity profile',789,panelY+38);
+ const left=margin+24, top=panelY+65, sw=panelW-48, sh=panelH-105, mid=left+sw/2;
+ // Screen-pattern stripe graphic; pattern scale is tied to the measured width.
+ const measuredSpan=kind==='double'?row.beta:row.W;
+ const spacing=Math.max(18,Math.min(150,kind==='double'?sw*measuredSpan/Math.max(1,10*row.beta):sw*row.W/Math.max(1,4*row.W)));
+ for(let px=0;px<sw;px++){
+   const u=(px-sw/2)/spacing;
+   let I;
+   if(kind==='double') I=Math.pow(Math.cos(Math.PI*u),2);
+   else {const z=Math.PI*u;I=Math.abs(z)<1e-8?1:Math.pow(Math.sin(z)/z,2);}
+   const rr=Math.round(22+233*I),gg=Math.round(5+45*I),bb=Math.round(5+28*I);
+   x.fillStyle=`rgb(${rr},${gg},${bb})`;x.fillRect(left+px,top,1,sh);
+ }
+ x.strokeStyle='#64748b';x.lineWidth=2;x.strokeRect(left,top,sw,sh);
+ x.fillStyle='#172033';x.font='17px system-ui';x.fillText('Central maximum / central fringe',left+sw/2-125,top+sh+26);
+ // Plot intensity profile.
+ const gx=789,gy=panelY+75,gw=panelW-48,gh=panelH-120,base=gy+gh;
+ x.strokeStyle='#cbd5e1';x.lineWidth=1;
+ for(let j=0;j<=4;j++){let yy=gy+j*gh/4;x.beginPath();x.moveTo(gx,yy);x.lineTo(gx+gw,yy);x.stroke();}
+ x.strokeStyle='#2457c5';x.lineWidth=4;x.beginPath();
+ for(let px=0;px<=gw;px++){
+   const u=(px-gw/2)/(kind==='double'?Math.max(18,gw/9):Math.max(22,gw/4.2));
+   let I;
+   if(kind==='double') I=Math.pow(Math.cos(Math.PI*u),2);
+   else {const z=Math.PI*u;I=Math.abs(z)<1e-8?1:Math.pow(Math.sin(z)/z,2);}
+   const yy=base-I*gh*.88;
+   if(px===0)x.moveTo(gx+px,yy);else x.lineTo(gx+px,yy);
+ }
+ x.stroke();
+ x.fillStyle='#172033';x.font='17px system-ui';x.fillText('Relative intensity (normalised)',gx,gy-12);
+ x.fillText('Position across screen →',gx+gw-205,base+30);
+ // Measurement/result strip
+ const stripY=640;x.fillStyle='#eef3fb';x.fillRect(55,stripY,1390,165);x.strokeStyle='#dbe3ee';x.strokeRect(55,stripY,1390,165);
+ x.fillStyle='#142747';x.font='bold 22px system-ui';x.fillText('Reading and calculated result',80,stripY+36);
+ x.fillStyle='#172033';x.font='20px system-ui';
+ if(kind==='double'){
+   x.fillText(`Screen distance D = ${row.D.toFixed(2)} m`,80,stripY+75);
+   x.fillText(`Measured width of 10 fringes = ${row.W.toFixed(2)} mm`,470,stripY+75);
+   x.fillText(`Fringe width β = ${row.beta.toFixed(3)} mm`,930,stripY+75);
+   x.fillText(`Slit separation d = ${$('dsep').value} mm`,80,stripY+118);
+   x.fillText(`Calculated wavelength λ = ${row.lam.toFixed(1)} nm`,470,stripY+118);
+   x.fillText(`Difference from reference = ${Math.abs(row.err).toFixed(2)}%`,930,stripY+118);
+ }else{
+   x.fillText(`Screen distance D = ${row.D.toFixed(2)} m`,80,stripY+75);
+   x.fillText(`Central maximum width W = ${row.W.toFixed(2)} mm`,470,stripY+75);
+   x.fillText(`Half-width y₁ = ${row.half.toFixed(3)} mm`,930,stripY+75);
+   x.fillText(`Slit width a = ${$('awidth').value} mm`,80,stripY+118);
+   x.fillText(`Calculated wavelength λ = ${row.lam.toFixed(1)} nm`,470,stripY+118);
+   x.fillText(`Angular spread 2θ ≈ ${row.ang.toExponential(3)} rad`,930,stripY+118);
+ }
+ x.fillStyle='#64748b';x.font='15px system-ui';
+ x.fillText('THEORETICAL VISUALISATION — generated from entered measurements; not a photograph or independent experimental evidence.',55,850);
+ x.fillText(kind==='double'?'Model: I ∝ cos²(πd sinθ/λ), small-angle approximation.':'Model: I/I₀ = (sin u/u)², with u = πa sinθ/λ.',55,875);
+ return c;
+}
+window.downloadPatternA=i=>{
+ const r=A[i];if(!r)return;
+ const c=drawReadingPlate('double',r,i);
+ downloadCanvasPNG(c,`double_slit_reading_${i+1}_D_${r.D.toFixed(2)}m.png`);
+};
+window.downloadPatternB=i=>{
+ const r=B[i];if(!r)return;
+ const c=drawReadingPlate('single',r,i);
+ downloadCanvasPNG(c,`single_slit_reading_${i+1}_D_${r.D.toFixed(2)}m.png`);
+};
+
+function updateVisuals(){
+ const D1=Math.max(.01,+$('distanceA').value||1),d=Math.max(.000001,+$('dsep').value||.25),l1=Math.max(1,+$('laserA').value||650);
+ const D2=Math.max(.01,+$('distanceB').value||1),a=Math.max(.000001,+$('awidth').value||.1),l2=Math.max(1,+$('laserB').value||650);
+ drawPattern('patternA','double',l1,D1,d);drawPattern('patternB','single',l2,D2,a);
+ drawSetup('setupA',true,D1);drawSetup('setupB',false,D2);
+}
+
+['dsep','laserA','distanceA','widthA','awidth','laserB','distanceB','widthB'].forEach(id=>$(id).addEventListener('input',updateVisuals));
+updatePreviewA();updatePreviewB();renderA();renderB();updateVisuals();
+</script>
+</body></html>
